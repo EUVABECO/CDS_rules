@@ -1,0 +1,54 @@
+grammar CDS
+cds <- @ws? (synth/calc/target/message)+ %act_cds
+
+# Basic terms
+comment <-  "#" [^\n]* "\n"
+ws <- (comment/[\s\n])+
+identifier <- [a-zA-Z0-9_\-\+/\.]+
+value <- durationvalue/datevalue/numvalue/strvalue
+
+numvalue <- [0-9]+ ( "." [0-9]+)? ![0-9 "."] %act_number
+durationvalue <- [0-9]+ ("d"/"w"/"m"/"y") %act_duration
+datevalue <- [0-9]+ @"-" [0-9]+ @"-" [0-9]+ %act_date
+strvalue <- [a-zA-Z0-9\-/]+ ![a-zA-Z0-9\-/] %act_string
+interval <- value @".." value
+label <- @"\"" [^\"]* @"\""
+
+condition <- scope @":" identifier (@ws label)? %act_condition
+scope <- (`BASE`/`COND`/`SYNTH`/`CALC`)
+
+cond_or_func_or_value <- (condition/funcall/value)
+funcall <- function @ws? @`(` @ws? (cond_or_func_or_value @ws? @`,` @ws?)* cond_or_func_or_value @ws? @`)` %act_function
+
+function <- `INTERVAL`/`ADD`/`SUB`/`MUL`/`DIV`/`HIST`
+
+synth <- @`SYNTH` @ws identifier @ws (label @ws)? @`IS` @ws operation @ws %act_synth
+calc <- @`CALC` @ws identifier @ws (label @ws)? @`IS` @ws funcall @ws %act_calc
+
+# IF statements
+premise <- @`IF` @ws (operation/expression) %act_premise
+operation <- (`ANY OF`/`ALL OF`) (@ws expression)+ 
+expression <- cond_or_func_or_value @ws? operator @ws? (interval/value) %act_expression
+operator <- "="/"!="/">="/"<="/">"/"<"/"in"/"contains no"/"contains"
+# Folders
+target <- @`TARGET` @ws identifier @ws folder+ @'END TARGET' @ws %act_target
+folder <- @`FOLDER` @ws id1:identifier @ws label? @ws? premise? @ws? (rule/folder)* @`END FOLDER` @ws id2:identifier @ws %act_folder
+
+# Rules
+rule <- @"RULE" @ws identifier @ws? (label @ws)? (@`WHEN` @ws (`RECOMMENDED`/`CONTRAINDICATED`) @ws)? premise @ws set_action @"END RULE" @ws identifier @ws %act_rule
+trigger <- @`WHEN` @ws (`RECOMMENDED`/`CONTRAINDICATED`)
+set_action <- @`DO` @ws action @ws (set_status @ws)? (age_forecast @ws)? (delay_forecast @ws)? messages? %act_action
+messages <- @`MESSAGES` @ws (!`END RULE` identifier @ws)*
+action <- `Recommended`/`Neutral`/`Exception`/`Contraindicated`/`Suggested`
+set_status <- @`STATUS` @ws status
+status <- `DUE`/`OVERDUE`/`CONTRAINDICATED`/`COMPLETED`/`UNKNOWN`
+age_forecast <- @`AGE` @ws (interval/value)
+delay_forecast <- @`DELAY` @ws (interval/value) @ws @`FROM` @ws condition
+
+#Messages
+message <- @`MESSAGE` @ws identifier @ws message_class @ws message_audience @ws @'PRIO' @ws value @ws (localized_message @ws)+ `END MESSAGE` @ws identifier @ws %act_message
+localized_message <- label @"@" language
+message_class <- (`ALERT`/`SUMMARY`/`JUSTIFICATION`/`COMMENTS`/`DETAILS`/`OTHER`)
+message_audience <- (`ANY`/`PRO`/`PATIENT`)
+language <- identifier
+  
