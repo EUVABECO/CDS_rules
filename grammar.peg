@@ -29,7 +29,7 @@ calc <- @`CALC` @ws identifier @ws (label @ws)? @`IS` @ws funcall @ws %act_calc
 premise <- @`IF` @ws (operation/expression) %act_premise
 operation <- (`ANY OF`/`ALL OF`) (@ws expression)+ 
 expression <- cond_or_func_or_value @ws? operator @ws? (interval/value) %act_expression
-operator <- "="/"!="/">="/"<="/">"/"<"/"in"/"contains no"/"contains"
+operator <- "="/"!="/">="/"<="/">"/"<"/"in"/"contains no"/"contains only"/"contains"
 # Folders
 target <- @`TARGET` @ws identifier @ws folder+ @'END TARGET' @ws %act_target
 folder <- @`FOLDER` @ws id1:identifier @ws label? @ws? premise? @ws? (rule/folder)* @`END FOLDER` @ws id2:identifier @ws %act_folder
