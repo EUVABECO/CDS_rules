@@ -53,7 +53,7 @@ FOLDER 1 "[12-64y] old"
   IF CALC:Age in 12y..64y
 
   RULE 1/01 "[12-64y] old, 0 dose: To do ASAP and 4m after last COVID-19"
-    IF CALC:COVID_doses_received = 0
+    IF CALC:Covid_doses_received = 0
     DO Recommended
       Status DUE
       Age 12y
@@ -64,7 +64,7 @@ FOLDER 1 "[12-64y] old"
     IF SYNTH:COV-ATCD = false
 
     RULE 11/01 "[12-64y] old, ≥1 dose, 0 COVID: To do 12m after LD"
-      IF CALC:COVID_doses_received>=1
+      IF CALC:Covid_doses_received>=1
       DO Recommended
         Status DUE
         Age 12y
@@ -77,7 +77,7 @@ FOLDER 1 "[12-64y] old"
 
     RULE 12/01 "[12-64y] old, ≥1 dose, COVID ≥ 8m LD: To do 4m after last COVID-19"
       IF ALL OF
-        CALC:COVID_doses_received>=1
+        CALC:Covid_doses_received>=1
         INTERVAL(CALC:Covid_last_dose_date,COND:C919 "Date of last COVID-19")>=8m
       DO Recommended
         Status DUE
@@ -87,7 +87,7 @@ FOLDER 1 "[12-64y] old"
 
     RULE 12/02 "[12-64y] old, ≥1 dose, COVID ≤ 7m LD: To do 12m after LD"
       IF ALL OF
-        CALC:COVID_doses_received>=1
+        CALC:Covid_doses_received>=1
         INTERVAL(CALC:Covid_last_dose_date,COND:C919 "Date of last COVID-19") in 0d..7m
       DO Recommended
         Status DUE
@@ -101,7 +101,7 @@ FOLDER 2 "≥ 65y old"
   IF CALC:Age>=65y
 
   RULE 2/01 "≥ 65y old, 0 dose: To do ASAP and 4m after last COVID-19"
-    IF CALC:COVID_doses_received = 0
+    IF CALC:Covid_doses_received = 0
     DO Recommended
       Status DUE
       Age 65y
@@ -112,7 +112,7 @@ FOLDER 2 "≥ 65y old"
     IF SYNTH:COV-ATCD = false
 
     RULE 21/01 "≥ 65 old, ≥1 dose, 0 COVID: To do 6m after LD"
-      IF CALC:COVID_doses_received>=1
+      IF CALC:Covid_doses_received>=1
       DO Recommended
         Status DUE
         Age 12y
@@ -125,7 +125,7 @@ FOLDER 2 "≥ 65y old"
 
     RULE 22/01 "≥ 65y old, ≥1 dose, COVID ≥ 2m LD: To do 4m after last COVID-19"
       IF ALL OF
-        CALC:COVID_doses_received>=1
+        CALC:Covid_doses_received>=1
         INTERVAL(CALC:Covid_last_dose_date,COND:C919 "Date of last COVID-19")>=2m
       DO Recommended
         Status DUE
@@ -135,7 +135,7 @@ FOLDER 2 "≥ 65y old"
 
     RULE 22/02 "≥ 65y old, ≥1 dose, COVID ≤ 1m LD: To do 6m after LD"
       IF ALL OF
-        CALC:COVID_doses_received>=1
+        CALC:Covid_doses_received>=1
         INTERVAL(CALC:Covid_last_dose_date,COND:C919 "Date of last COVID-19")<=1m
       DO Recommended
         Status DUE
@@ -158,7 +158,7 @@ FOLDER 9 "Further information"
     WHEN Recommended
     IF ALL OF
       CALC:Age>=65y
-      CALC:COVID_doses_received>=1
+      CALC:Covid_doses_received>=1
     DO Neutral
     MESSAGES  MSG198
   END RULE 9/02

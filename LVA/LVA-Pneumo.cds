@@ -3,7 +3,7 @@ CALC Pneu_d1d2 is INTERVAL(HIST(PNEUMO,1,date),HIST(PNEUMO,2,date))
 
 CALC Pneu_age_at_first_act is INTERVAL(BASE:dob, HIST(PNEUMO,1,date))
 CALC Pneu_last_dose_date IS HIST(Pneumo,-1,date)
-CALC last_valences_ids IS HIST(Pneumo,-1,valences)
+CALC Pneu_last_dose_valences IS HIST(Pneumo,-1,valences)
 CALC Pneu_age_at_last_dose IS INTERVAL(BASE:dob,CALC:Pneu_last_dose_date)
 CALC Per_time_since_last_dose IS INTERVAL(CALC:Per_last_dose_date,BASE:eval)
 CALC received_valence_ids is HIST(Pneumo,0,valences)
@@ -31,8 +31,8 @@ SYNTH PNEU_1ST_7_15 "PNEU-1st7/15 - 1st dose 7 to 15 conjugated vaccine" IS ALL 
   CALC:first_valence_ids contains no VPC-08
 
 SYNTH PNEU_LD_10_15 "PNEU-LD10/15 - Last dose includes 7 to 15 conjugated vaccine" IS ALL OF
-  CALC:last_valence_ids contains VPC-04
-  CALC:last_valence_ids contains no VPC-08
+  CALC:Pneu_last_dose_valences contains VPC-04
+  CALC:Pneu_last_dose_valences contains no VPC-08
 
 SYNTH PNEU_RF_PREMA "PNEU-RF Premature birth ≤ 33 weeks" IS ALL OF COND:C995 "Number of weeks of amenorrhoea at birth for a premature baby"<=33
 
@@ -50,8 +50,8 @@ SYNTH PNEU_ONLY10_20_NOT23NC "PNEU-ONLY10/20-NOT23NC - Received only doses of PC
   CALC:received_valence_ids contains no VPP-05
 
 SYNTH PNEU_LD20 "PNEU-LD20 - Last dose is PREVENAR 20" IS ALL OF
-  CALC:last_valence_ids contains VPC-08
-  CALC:last_valence_ids contains no VPC-09N
+  CALC:Pneu_last_dose_valences contains VPC-08
+  CALC:Pneu_last_dose_valences contains no VPC-09N
 
 SYNTH PNEU_ID "PNEU-ID - Hereditary immune deficiencies and pneumococcal vaccine" IS ANY OF
   COND:C580 "Phagocytic cell deficiency (septic granulomatosis)" = true
@@ -668,7 +668,7 @@ FOLDER 9 "Further information"
       IF ALL OF
         CALC:Age<=23m
         SYNTH:PNEU_LD_10_15 "PNEU-LD10/15 - Last dose includes 7 to 15 conjugated vaccine" = true
-        CALC:last_valence_ids contains no VPC-22F
+        CALC:Pneu_last_dose_valences contains no VPC-22F
       DO Neutral
       MESSAGES  MSG154
     END RULE 91/09
@@ -678,7 +678,7 @@ FOLDER 9 "Further information"
       IF ALL OF
         CALC:Age<=23m
         SYNTH:PNEU_LD_10_15 "PNEU-LD10/15 - Last dose includes 7 to 15 conjugated vaccine" = true
-        CALC:last_valence_ids contains VPC-22F
+        CALC:Pneu_last_dose_valences contains VPC-22F
       DO Neutral
       MESSAGES  MSG113
     END RULE 91/10
