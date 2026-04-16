@@ -71,8 +71,7 @@ IF ALL OF
 CALC:d1d2>=3w
 CALC:d2d3>=3w
 CALC:d3d4>=3w
-INTERVAL(SYST:penultimate_prevention_act_date,
-SYST:last_prevention_act_date)\>=3w
+INTERVAL(HIST(Pneumo,-2,date),HIST(Pneumo,-1,date))>=3w
 CALC:patient_age_at_the_last_act>=11m
 SYNTH:PNEU-ONLY10/20-NOT23NC = true
 ```
@@ -95,7 +94,7 @@ The DO RECOMMENDED clause must be complemented with the details needed to determ
 DO Recommended
 Status DUE
 Age 7y..9y
-Delay 6w..8w from SYST:last_prevention_act_date
+Delay 6w..8w from HIST(Per,-1,date)
 ```
 
 Status allows for the mapping to the FHIR forecast status, according to the following table:
